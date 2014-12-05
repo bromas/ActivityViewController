@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bb3-7j-mAn">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+    </dependencies>
+    <scenes>
+        <!--Screen One-->
+        <scene sceneID="Rrs-tp-g2S">
+            <objects>
+                <viewController id="bb3-7j-mAn" customClass="ScreenOne" customModule="ApplicationVCSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dsH-g7-IWe"/>
+                        <viewControllerLayoutGuide type="bottom" id="kSp-OJ-J8l"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KdY-jF-oMg">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqh-WJ-RbI">
+                                <rect key="frame" x="269" y="289" width="63" height="30"/>
+                                <state key="normal" title="Generate">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="authButtonTapped" destination="bb3-7j-mAn" eventType="touchUpInside" id="Cnb-SO-elG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hI6-6e-aMo">
+                                <rect key="frame" x="241" y="327" width="121" height="30"/>
+                                <state key="normal" title="Activity Embeded">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="embedButtonTapped" destination="bb3-7j-mAn" eventType="touchUpInside" id="9xd-Pm-cMq"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Dd-dL-RvY">
+                                <rect key="frame" x="269" y="260" width="65" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="rqh-WJ-RbI" secondAttribute="centerY" constant="-3.5" id="JjY-FY-cWy"/>
+                            <constraint firstAttribute="centerX" secondItem="rqh-WJ-RbI" secondAttribute="centerX" constant="-0.5" id="QgQ-y2-OsM"/>
+                            <constraint firstItem="hI6-6e-aMo" firstAttribute="top" secondItem="rqh-WJ-RbI" secondAttribute="bottom" constant="8" id="Tw7-Pu-bFq"/>
+                            <constraint firstItem="rqh-WJ-RbI" firstAttribute="top" secondItem="5Dd-dL-RvY" secondAttribute="bottom" constant="8" id="ZzR-vD-o3m"/>
+                            <constraint firstItem="rqh-WJ-RbI" firstAttribute="centerX" secondItem="5Dd-dL-RvY" secondAttribute="centerX" constant="-0.5" id="jy4-QS-gND"/>
+                            <constraint firstAttribute="centerX" secondItem="hI6-6e-aMo" secondAttribute="centerX" constant="-1.5" id="yxb-q4-WRa"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Gd4-Z3-4f1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="491" y="428"/>
+        </scene>
+    </scenes>
+</document>
