@@ -4,7 +4,7 @@ This framework provides a controller that can handle loading, managing, and tran
 #### Installation
 Using [Carthage](https://github.com/Carthage/Carthage) add
 ```shell
-github "bromas/ApplicationVC"
+github "bromas/ActivityViewController"
 ```
 to your Cartfile
 
