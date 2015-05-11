@@ -8,6 +8,13 @@ github "bromas/ActivityViewController"
 ```
 to your Cartfile
 
+Using [Cocoapods](https://guides.cocoapods.org/using/index.html) add
+```ruby
+use_frameworks!
+pod 'ActivityViewController', '~> 1.0'
+```
+to your Podfile
+
 ### Getting Started
 
 After including the framework in your project, set the class type of your initial view controller in the applications main storyboard to ActivityViewController. To display an initial activity/storyboard, set the initialActivityIdentifier as a User Defined Runtime Attribute to the name of the first storyboard you would like to load. (Look at the Identity Inspector of the Main.storyboard in the sample application if that doesnt make sense.)
