@@ -15,37 +15,96 @@ pod 'ActivityViewController', '~> 1.0'
 ```
 to your Podfile
 
-### Getting Started
+### Generate, Configure, Display, Dispose.
 
-After including the framework in your project, set the class type of your initial view controller in the applications main storyboard to ActivityViewController. To display an initial activity/storyboard, set the initialActivityIdentifier as a User Defined Runtime Attribute to the name of the first storyboard you would like to load. (Look at the Identity Inspector of the Main.storyboard in the sample application if that doesnt make sense.)
-
-'Loading an activity' basically means searching for a storyboard of the same name and loading it's initial view controller.
-
-To test out how this works make 2 new storyboards beyond the Main.storyboard and set the name of one of those as the initialActivityIdentifier as suggested above. Create and execute an ActivityOperation to transition to the second storyboard.
+A basic useage of ActivityViewController is registering generator blocks to construct and configure controllers before adding it as a child controller, and specifiying an initialActivityIdentifier. 
 
 ```swift
-ActivityOperation(identifier: "Second", animationType: .TransitionCurlUp, duration: 0.4).execute()
+func configureEmbeddedActivities(activities: ActivityViewController) {
+    activities.registerGenerator("first") { [unowned self] () -> UIViewController in
+      let childController = FirstController()
+      ConfigurationManager.sharedInstance.configureFirstController(childController)
+      return childController
+    }
+    activities.registerGenerator("second") { [unowned self] () -> UIViewController in
+      let childController = SecondController()
+      ConfigurationManager.sharedInstance.configureSecondController(childController)
+      return childController
+    }
+    activities.initialActivityIdentifier = "first"
+  }
 ```
 
-### Using The ActivityViewController
+After registering the generators above, this code will perform the SpringSlideAnimator animated transitioning to switch between the controllers and deallocate the one that is not currently displayed.
 
-#### Configuring Activities
+``` swift
+func swapController() {
+    self.swapButton.enabled = false
+    switch activeActivity {
+    case "first":
+      var operation = ActivityOperation(identifier: "second", animator: SpringSlideAnimator(direction: .Right))
+      operation.completionBlock = { [unowned self] in
+        self.swapButton.enabled = true
+        self.activities.flushInactiveActivitiesForIdentifier("first")
+        return
+      }
+      activities.performActivityOperation(operation)
+      activeActivity = "second"
+    default:
+      var operation = ActivityOperation(identifier: "first", animator: SpringSlideAnimator(direction: .Left))
+      operation.completionBlock = { [unowned self] in
+        self.swapButton.enabled = true
+        self.activities.flushInactiveActivitiesForIdentifier("second")
+        return
+      }
+      activities.performActivityOperation(operation)
+      activeActivity = "first"
+    }
+  }
+```
 
-If you subclass ActivityViewController and override prepareForActivity(identifier: String, controller: UIViewController) you can handle any needed initialization/configuration. (only runs each time a new controller is created, not on redisplay.)
+### Storyboards Are Generators Too.
 
-#### Configuring Generators
+You do not have to register generators if you let your storyboards represent your String -> UIViewController conversion. 
 
-You can add closures that generate UIViewControllers for specific keys if you don't want/need to construct a storyboard.
+Specifically, an activity operation searches for a controller on this path.
+
+inactive but already constructed -> generators for key -> storyboards of the same name
+
+For example, this is a valid operation if you have a storyboard called 'locations' and want to display its initial view controller.
 
 ```swift
-activitiesController.registerGenerator("Generated") { 
-  return GeneratedController() 
-}
+var operation = ActivityOperation(identifier: "locations", animator: SpringSlideAnimator(direction: .Right))
+      activities.performActivityOperation(operation)
+```
+
+### Using ActivityOperations
+
+#### Transitioning
+
+The ActivitiyOperation has 3 initializers for specifying transition animations.
+
+Unanimated transitions:
+
+```swift
+ActivityOperation(identifier: "Authentication")
+```
+
+UIViewAnimationOptions:
+
+```swift
+ActivityOperation(identifier: "Authentication", animationType: .TransitionCurlUp, duration: 0.5)
+```
+
+UIViewControllerAnimatedTransitionings:
+
+```swift
+ActivityOperation(identifier: "Authentication", animator: ShrinkAnimator())
 ```
 
 #### Persistance
 
-Inactive activities are stored by key ('activityIdentifier') and in the order of their last presentation. Calling to switch to an activity key that has already been presented will simply redisplay the same controllers. You can, however, flush out the view controllers which reside under an Activity Identifier if you want to launch a fresh version of that storyboard/UIViewController on the next presentation of that key
+Inactive activities are stored in the ActivityViewController that presented them by key ('activityIdentifier') and in the order of their last presentation. Calling to switch to an activity key that has already been presented will simply redisplay the same controllers. You can, however, flush out the view controllers which reside under an Activity Identifier if you want to launch a fresh version of that storyboard/UIViewController on the next presentation of that key
 
 ```swift
 activitiesController.flushInactiveActivitiesForIdentifier(...)
@@ -57,35 +116,12 @@ or use the '.New' presentation 'rule' exposed on the ActivityOperation.
 ActivityOperation(rule: .New, identifier: "Authentication", animator: ShrinkAnimator()).execute()
 ```
 
-#### Transitions
+#### Make ActivityViewController Your RootController
 
-Transitioning between activities is encapsulated in the ActivityOperation struct. These can be executed by calling the execute() method on the operation (this requires and will perform the operation on an ActivityViewController that is the root controller of your app) or by calling the performActivityOperation instance method on an ActivityViewController you have embedded elsewhere in your app. 
+Set the class type of your initial view controller in the applications main storyboard to your custom subclass of ActivityViewController and set the initialActivityIdentifier as a User Defined Runtime Attribute to the name of the first storyboard you would like to load. 
 
-```swift
-activityViewController.performActivityOperation(operation)
-```
-
-The ActivitiyOperation has 3 initializers for specifying transition animations.
-
-One for Unanimated transitions:
-
-```swift
-ActivityOperation(identifier: "Authentication").execute()
-```
-
-One for UIViewAnimationOptions:
-
-```swift
-ActivityOperation(identifier: "Authentication", animationType: .TransitionCurlUp, duration: 0.5).execute()
-```
-
-And one for UIViewControllerAnimatedTransitionings:
-
-```swift
-ActivityOperation(identifier: "Authentication", animator: ShrinkAnimator()).execute()
-```
-
+In this special case, you can simply call execute() on an ActivityOperation and it will handle passing itself on to the root ActivityViewController.
 
 #### Examples
 
-The included sample project, and my FrameworksPlayground repo here in github show some example useage.
+The included sample project, and my FrameworksPlayground repo on github show some example useage.
