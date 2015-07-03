@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
-internal func constrainEdgesOf(view: UIView, #toEdgesOf: UIView) -> NSLayoutConstraint {
+internal func constrainEdgesOf(view: UIView, toEdgesOf: UIView) -> NSLayoutConstraint {
   toEdgesOf.addConstraint(NSLayoutConstraint(item: view,attribute: .Height, relatedBy: .Equal, toItem: toEdgesOf, attribute: .Height, multiplier: 1.0, constant: 0.0))
   toEdgesOf.addConstraint(NSLayoutConstraint(item: view, attribute: .Width, relatedBy: .Equal, toItem: toEdgesOf, attribute: .Width, multiplier: 1.0, constant: 0.0))
   toEdgesOf.addConstraint(NSLayoutConstraint(item: view, attribute: .CenterY, relatedBy: .Equal, toItem: toEdgesOf, attribute: .CenterY, multiplier: 1.0, constant: 0.0))

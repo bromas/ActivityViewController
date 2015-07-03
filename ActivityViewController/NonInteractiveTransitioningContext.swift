@@ -37,7 +37,7 @@ internal class NonInteractiveTransitionContext : NSObject, UIViewControllerConte
     completionBlock(didComplete)
   }
   
-  func containerView() -> UIView { return container }
+  func containerView() -> UIView? { return container }
   
   func initialFrameForViewController(vc: UIViewController) -> CGRect {
     if vc == viewControllers[UITransitionContextFromViewControllerKey] {

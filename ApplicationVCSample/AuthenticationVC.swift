@@ -31,7 +31,7 @@ class AuthenticationVC : UIViewController {
     self.actionOnButtonTap = {
       var operation = ActivityOperation(rule: .New, identifier: "Authentication", animator: ShrinkAnimator())
       operation.completionBlock = {
-        println("ohhhh yea")
+        print("ohhhh yea")
       }
       self.activities.performActivityOperation(operation)
     }

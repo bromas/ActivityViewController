@@ -13,23 +13,23 @@ import QuartzCore
 import UIKit
 
 class ShrinkDismissAnimator : NSObject, UIViewControllerAnimatedTransitioning {
-  func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+  func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
     return 0.8
   }
   
   func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
     
-    var fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-    var toView = transitionContext.viewForKey(UITransitionContextToViewKey)
-    var container = transitionContext.containerView()
+    let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
+    let toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+    let container = transitionContext.containerView()
     
-    toView?.setTranslatesAutoresizingMaskIntoConstraints(false)
+    toView!.translatesAutoresizingMaskIntoConstraints = false
     
-    container.backgroundColor = UIColor.blackColor()
-    container.addSubview(toView!)
-    let centerXTo = constrainEdgesOf(toView!, toEdgesOf: container)
-    centerXTo.constant = container.bounds.width + 20
-    container.layoutIfNeeded()
+    container!.backgroundColor = UIColor.blackColor()
+    container!.addSubview(toView!)
+    let centerXTo = constrainEdgesOf(toView!, toEdgesOf: container!)
+    centerXTo.constant = container!.bounds.width + 20
+    container!.layoutIfNeeded()
     toView?.alpha = 1
     
     let animations = { () -> Void in
@@ -53,8 +53,7 @@ class ShrinkDismissAnimator : NSObject, UIViewControllerAnimatedTransitioning {
       
       fromView?.layer.addAnimation(animationGroup, forKey: "rotateScaleFade")
       centerXTo.constant = 0
-      let value = container.bounds.width / 16
-      container.layoutIfNeeded()
+      container!.layoutIfNeeded()
       return
     }
     

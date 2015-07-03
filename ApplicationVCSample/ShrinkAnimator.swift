@@ -10,20 +10,20 @@ import Foundation
 import UIKit
 
 class ShrinkAnimator : NSObject, UIViewControllerAnimatedTransitioning {
-  func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+  func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
     return 0.7
   }
   
   func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
     
-    var fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-    var toView = transitionContext.viewForKey(UITransitionContextToViewKey)
-    toView?.setTranslatesAutoresizingMaskIntoConstraints(false)
-    var container = transitionContext.containerView()
+    let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
+    let toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+    toView!.translatesAutoresizingMaskIntoConstraints = false
+    let container = transitionContext.containerView()
     
-    container.addSubview(toView!)
-    constrainEdgesOf(toView!, toEdgesOf: container)
-    container.layoutIfNeeded()
+    container!.addSubview(toView!)
+    constrainEdgesOf(toView!, toEdgesOf: container!)
+    container!.layoutIfNeeded()
     toView?.alpha = 0
     
     let animations = { () -> Void in

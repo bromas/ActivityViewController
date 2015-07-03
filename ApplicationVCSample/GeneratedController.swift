@@ -19,13 +19,13 @@ class GeneratedController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.view.setTranslatesAutoresizingMaskIntoConstraints(false)
+    self.view.translatesAutoresizingMaskIntoConstraints = false
     let label = UILabel(frame: CGRectMake(100, 100, 200, 100))
     self.view.addSubview(label)
     label.text = "Hi from the generator"
     self.view.backgroundColor = .redColor()
     
-    let button: UIButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+    let button: UIButton = UIButton(type: UIButtonType.System)
     button.setTitle("Back", forState: UIControlState.Normal)
     button.frame = CGRectMake(100, 180, 200, 100)
     button.addTarget(self, action: "buttonTap", forControlEvents: .TouchUpInside)

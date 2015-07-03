@@ -64,7 +64,7 @@ internal class ActivityTransitionManager {
   
   private func initializeDisplayWithController(controller: UIViewController) {
     let container = UIView(frame: CGRectZero)
-    container.setTranslatesAutoresizingMaskIntoConstraints(false)
+    container.translatesAutoresizingMaskIntoConstraints = false
     managedContainer.view.addSubview(container)
     constrainEdgesOf(container, toEdgesOf: managedContainer.view)
     prepareContainmentFor(controller, inController: managedContainer)

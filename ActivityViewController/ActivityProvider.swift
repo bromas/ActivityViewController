@@ -38,14 +38,14 @@ internal class ActivityProvider {
     if let generator = activityGenerators[identifier] {
       controller = generator()
     } else {
-      var storyboardName = self.activityStoryboardNames[storyboardIdentifierFromActivityIdentifier(identifier)] ?? identifier
+      let storyboardName = self.activityStoryboardNames[storyboardIdentifierFromActivityIdentifier(identifier)] ?? identifier
       controller = self.loadStoryboard(storyboardName, withActivityName: identifier)
     }
     return Activity(identifier: identifier, controller: controller)
   }
   
   private func loadStoryboard(storyboardName: String, withActivityName activity: String) -> UIViewController {
-    let controller = UIStoryboard(name: storyboardName, bundle: NSBundle.mainBundle()).instantiateInitialViewController() as? UIViewController
+    let controller = UIStoryboard(name: storyboardName, bundle: NSBundle.mainBundle()).instantiateInitialViewController()
     if let initialized = controller {
       return initialized
     }
@@ -65,7 +65,7 @@ func storyboardIdentifierFromActivityIdentifier(identifier: String) -> String {
 func controllerForStoryboard(storyboard: String, activityName: String) -> UIViewController? {
   if activityName.rangeOfString("#") != nil {
     let boardName = activityName.componentsSeparatedByString("#")
-    return UIStoryboard(name: storyboard, bundle: NSBundle.mainBundle()).instantiateViewControllerWithIdentifier(boardName[1]) as? UIViewController
+    return UIStoryboard(name: storyboard, bundle: NSBundle.mainBundle()).instantiateViewControllerWithIdentifier(boardName[1])
   } else {
     
   }

@@ -14,40 +14,40 @@ public class CinematicWipeTransitionAnimator: NSObject, UIViewControllerAnimated
   public var animationDuration: NSTimeInterval = 1.0
   private var isPresenting = true
   
-  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
     return animationDuration
   }
   
   public func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-    var fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-    var toView = transitionContext.viewForKey(UITransitionContextToViewKey)
-    toView?.setTranslatesAutoresizingMaskIntoConstraints(false)
-    var container = transitionContext.containerView()
+    let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
+    let toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+    toView!.translatesAutoresizingMaskIntoConstraints = false
+    let container = transitionContext.containerView()
     
-    container.insertSubview(toView!, atIndex: 0)
-    constrainSizeAndCenter(toView!, toView: container)
-    container.layoutIfNeeded()
+    container!.insertSubview(toView!, atIndex: 0)
+    constrainSizeAndCenter(toView!, toView: container!)
+    container!.layoutIfNeeded()
     
     let toSnapshot = toView!.snapshotViewAfterScreenUpdates(true)
-    let snapshotContainer = UIView(frame: container.bounds)
-    snapshotContainer.setTranslatesAutoresizingMaskIntoConstraints(false)
-    toSnapshot.setTranslatesAutoresizingMaskIntoConstraints(false)
+    let snapshotContainer = UIView(frame: container!.bounds)
+    snapshotContainer.translatesAutoresizingMaskIntoConstraints = false
+    toSnapshot.translatesAutoresizingMaskIntoConstraints = false
     snapshotContainer.clipsToBounds = true
     snapshotContainer.backgroundColor = UIColor.blackColor()
     
-    container.addSubview(snapshotContainer)
-    let width = constrainEdges(snapshotContainer, toView: container)
-    width.constant = -container.bounds.width
+    container!.addSubview(snapshotContainer)
+    let width = constrainEdges(snapshotContainer, toView: container!)
+    width.constant = -container!.bounds.width
     snapshotContainer.addSubview(toSnapshot)
     let snapShotConstraints = constrainEdges(toSnapshot, toView: snapshotContainer)
     snapshotContainer.removeConstraint(snapShotConstraints)
-    let widthConstraint = NSLayoutConstraint(item: toSnapshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1.0, constant: container.bounds.width)
+    let widthConstraint = NSLayoutConstraint(item: toSnapshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1.0, constant: container!.bounds.width)
     toSnapshot.addConstraint(widthConstraint)
-    container.layoutIfNeeded()
+    container!.layoutIfNeeded()
   
     UIView.animateWithDuration(self.transitionDuration(transitionContext), delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
       width.constant = 0
-      container.layoutIfNeeded()
+      container!.layoutIfNeeded()
       toSnapshot.layoutIfNeeded()
       }) { (complete) -> Void in
         fromView!.removeFromSuperview()

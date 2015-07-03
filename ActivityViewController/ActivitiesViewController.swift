@@ -81,17 +81,15 @@ public class ActivityViewController : UIViewController {
   }
   
   func processActivityResult(activityResult: ActivityResult, withOperation operation: ActivityOperation) -> Void {
-    if enableLogging { println("Activity: \(activityResult)") }
+    if enableLogging { print("Activity: \(activityResult)") }
     switch activityResult {
     case .Fresh(let activity):
       self.prepareActivity(activity.identifier, controller: activity.controller)
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
     case .Retrieved(let activity):
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
-    case .Current(let activity):
-      assert(true, "No need to do anything")
-    case .Error:
-      assert(true, "Handle any error here...")
+    case .Current(_): break
+    case .Error: break
     }
   }
   

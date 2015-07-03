@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-enum ActivityResult : Printable {
+enum ActivityResult : CustomStringConvertible {
   case Fresh(Activity)
   case Retrieved(Activity)
   case Current(Activity)
@@ -50,7 +50,7 @@ internal class ActivityManager {
   func flushInactiveActivitiesForIdentifier(identifier: String) -> Void {
     let containedActivity = inactiveActivities.filter{ $0.identifier == identifier }
     if let foundActivity = containedActivity.first {
-      inactiveActivities.removeAtIndex(find(inactiveActivities, foundActivity)!)
+      inactiveActivities.removeAtIndex(inactiveActivities.indexOf(foundActivity)!)
       flushInactiveActivitiesForIdentifier(identifier)
     }
   }
@@ -69,7 +69,7 @@ internal class ActivityManager {
     
     let containedActivity = inactiveActivities.filter{ $0.identifier == identifier }
     if let foundActivity = containedActivity.first {
-      inactiveActivities.removeAtIndex(find(inactiveActivities, foundActivity)!)
+      inactiveActivities.removeAtIndex(inactiveActivities.indexOf(foundActivity)!)
       inactiveActivities.append(activeActivity!)
       activeActivity = foundActivity
       return .Retrieved(foundActivity)

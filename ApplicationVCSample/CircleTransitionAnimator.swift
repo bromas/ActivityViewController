@@ -31,7 +31,7 @@ public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransit
     super.init()
   }
   
-  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
     return animationDuration
   }
   
@@ -70,7 +70,7 @@ public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransit
     maskedView.layer.mask = maskLayer
     maskLayer.masksToBounds = true
     
-    var animation = CABasicAnimation(keyPath: "path")
+    let animation = CABasicAnimation(keyPath: "path")
     animation.duration = self.transitionDuration(transitionContext)
     animation.delegate = self
     animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
@@ -95,14 +95,14 @@ public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransit
   }
   
   private func circularMaskLayer(frame: CGRect) -> CAShapeLayer {
-    var layer = CAShapeLayer()
+    let layer = CAShapeLayer()
     layer.fillColor = UIColor.blackColor().CGColor
     layer.frame = frame
     layer.path = CGPathCreateWithEllipseInRect(frame, nil)
     return layer
   }
   
-  override public func animationDidStop(anim: CAAnimation!, finished flag: Bool) {
+  override public func animationDidStop(anim: CAAnimation, finished flag: Bool) {
     if flag {
       toView.layer.masksToBounds = false
       fromView.layer.masksToBounds = false
