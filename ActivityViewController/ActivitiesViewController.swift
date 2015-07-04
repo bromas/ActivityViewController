@@ -13,9 +13,7 @@ public typealias ActivityGenerator = () -> UIViewController
 
 public class ActivityViewController : UIViewController {
 
-  lazy internal var transitionManager: ActivityTransitionManager = { [unowned self] in
-    return ActivityTransitionManager(containerController: self)
-    }()
+  internal var transitionManager: ActivityTransitionManager!
   
   internal let activitiesManager: ActivityManager = ActivityManager()
   
@@ -37,6 +35,7 @@ public class ActivityViewController : UIViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    transitionManager = ActivityTransitionManager(containerController: self)
   }
   
   public override func viewWillAppear(animated: Bool) {
