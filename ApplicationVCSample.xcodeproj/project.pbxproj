@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D31B3EF81B87E85C0072E03E /* InteractiveTransitioningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31B3EF71B87E85C0072E03E /* InteractiveTransitioningManager.swift */; };
 		D32D5D901AA549E200AC8B97 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32D5D8F1AA549E200AC8B97 /* AppController.swift */; };
 		D34477951AA4428F005BC0A3 /* CinematicWipeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34477941AA4428F005BC0A3 /* CinematicWipeAnimator.swift */; };
 		D34477971AA4F188005BC0A3 /* ShrinkDismissAnimartor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34477961AA4F188005BC0A3 /* ShrinkDismissAnimartor.swift */; };
@@ -77,6 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D31B3EF71B87E85C0072E03E /* InteractiveTransitioningManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractiveTransitioningManager.swift; sourceTree = SOURCE_ROOT; };
 		D32D5D8F1AA549E200AC8B97 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		D34477941AA4428F005BC0A3 /* CinematicWipeAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CinematicWipeAnimator.swift; sourceTree = "<group>"; };
 		D34477961AA4F188005BC0A3 /* ShrinkDismissAnimartor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShrinkDismissAnimartor.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				D373852D1AFBF8040006766C /* ActivityTransitionManager.swift */,
 				D373852E1AFBF8040006766C /* AnimateByTypeManager.swift */,
 				D373852F1AFBF8040006766C /* AnimateNonInteractiveTransitionManager.swift */,
+				D31B3EF71B87E85C0072E03E /* InteractiveTransitioningManager.swift */,
 			);
 			name = TransitionManagers;
 			sourceTree = "<group>";
@@ -437,6 +440,7 @@
 				D37385311AFBF8040006766C /* AnimateByTypeManager.swift in Sources */,
 				D373853C1AFBF8310006766C /* ActivitiesViewController.swift in Sources */,
 				D37385341AFBF8100006766C /* ContainmentHelperMethods.swift in Sources */,
+				D31B3EF81B87E85C0072E03E /* InteractiveTransitioningManager.swift in Sources */,
 				D373852C1AFBF7F90006766C /* ActivityProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

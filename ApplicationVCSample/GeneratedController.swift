@@ -14,7 +14,7 @@ class GeneratedController: UIViewController {
   
   @IBAction func buttonTap() { actionOnButtonTap() }
   var actionOnButtonTap : () -> Void = {
-    ActivityOperation(rule: .Any, identifier: "Launch", animator: CircleTransitionAnimator(direction: .Inward, duration: 0.5)).execute()
+    ActivityOperation(rule: .Any, identifier: "Launch", animator: CircleTransitionAnimator(direction: .Outward, duration: 0.5)).execute()
   }
   
   override func viewDidLoad() {
