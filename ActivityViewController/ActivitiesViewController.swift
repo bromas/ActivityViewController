@@ -33,6 +33,10 @@ public class ActivityViewController : UIViewController {
     }
   }
   
+  public var activityConfigurationClosure: (identifer: String, controller: UIViewController) -> () = { identifier, controller in
+    
+  }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     transitionManager = ActivityTransitionManager(containerController: self)
@@ -45,7 +49,9 @@ public class ActivityViewController : UIViewController {
     }
   }
   
-  public func prepareActivity(activity: String, controller: UIViewController) -> Void { }
+  public func prepareActivity(activity: String, controller: UIViewController) -> Void {
+    activityConfigurationClosure(identifer: activity, controller: controller)
+  }
   
   public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) { }
   
