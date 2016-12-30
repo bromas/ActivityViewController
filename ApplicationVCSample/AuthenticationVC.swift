@@ -20,16 +20,16 @@ class AuthenticationVC : UIViewController {
     
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "activities" {
-      self.activities = segue.destinationViewController as? ActivityViewController
+      self.activities = segue.destination as? ActivityViewController
     }
   }
   
   override func viewDidLoad() {
-    self.navigationController?.navigationBarHidden = true
+    self.navigationController?.isNavigationBarHidden = true
     self.actionOnButtonTap = {
-      var operation = ActivityOperation(rule: .New, identifier: "Authentication", animator: ShrinkAnimator())
+      var operation = ActivityOperation(rule: .new, identifier: "Authentication", animator: ShrinkAnimator())
       operation.completionBlock = {
         print("ohhhh yea")
       }
@@ -37,7 +37,7 @@ class AuthenticationVC : UIViewController {
     }
   }
   
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     timesPresented += 1
   }
@@ -45,15 +45,15 @@ class AuthenticationVC : UIViewController {
   @IBAction func backButtonTapped() {
     switch timesPresented % 5 {
     case 0:
-      ActivityOperation(identifier: "Launch", animator: CircleTransitionAnimator(direction: .Outward, duration: 0.5)).execute()
+      ActivityOperation(identifier: "Launch", animator: CircleTransitionAnimator(direction: .outward, duration: 0.5)).execute()
     case 1:
       ActivityOperation(identifier: "Launch", animator: CinematicWipeTransitionAnimator()).execute()
     case 2:
       ActivityOperation(identifier: "Launch", animator: ShrinkAnimator()).execute()
     case 3:
-      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.TransitionCurlUp, duration: 0.5).execute()
+      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionCurlUp, duration: 0.5).execute()
     default:
-      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.TransitionFlipFromLeft, duration: 0.5).execute()
+      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionFlipFromLeft, duration: 0.5).execute()
     }
   }
   

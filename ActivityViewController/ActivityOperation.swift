@@ -10,53 +10,53 @@ import Foundation
 import UIKit
 
 public enum ActivityOperationType {
-  case None
-  case AnimationOption
-  case NonInteractiveTransition
-  case TransitioningDelegate
-  case Presented
+  case none
+  case animationOption
+  case nonInteractiveTransition
+  case transitioningDelegate
+  case presented
 }
 
 public enum ActivityOperationRule {
-  case New
-  case Any
-  case Previous
+  case new
+  case any
+  case previous
 }
 
 public struct ActivityOperation {
   
-  internal var type = ActivityOperationType.AnimationOption
-  internal var selectRule = ActivityOperationRule.Any
-  internal var animationOption = UIViewAnimationOptions.TransitionCrossDissolve
+  internal var type = ActivityOperationType.animationOption
+  internal var selectRule = ActivityOperationRule.any
+  internal var animationOption = UIViewAnimationOptions.transitionCrossDissolve
   internal var animationDuration = 0.3
   internal var nonInteractiveTranstionanimator : UIViewControllerAnimatedTransitioning!
   public var completionBlock : () -> Void = { }
   
   internal let activityIdentifier: String
   
-  public init (rule: ActivityOperationRule = .Any, identifier: String = "") {
+  public init (rule: ActivityOperationRule = .any, identifier: String = "") {
     selectRule = rule
     activityIdentifier = identifier
-    type = .None
+    type = .none
   }
   
-  public init (rule: ActivityOperationRule = .Any, identifier: String, animator: UIViewControllerAnimatedTransitioning) {
+  public init (rule: ActivityOperationRule = .any, identifier: String, animator: UIViewControllerAnimatedTransitioning) {
     selectRule = rule
     activityIdentifier = identifier
-    type = .NonInteractiveTransition
+    type = .nonInteractiveTransition
     nonInteractiveTranstionanimator = animator
   }
   
-  public init (rule: ActivityOperationRule = .Any, identifier: String, animationType: UIViewAnimationOptions, duration: Double) {
+  public init (rule: ActivityOperationRule = .any, identifier: String, animationType: UIViewAnimationOptions, duration: Double) {
     selectRule = rule
     activityIdentifier = identifier
-    type = .AnimationOption
+    type = .animationOption
     animationOption = animationType
     animationDuration = duration
   }
   
   public func execute () {
-    let delegate =  UIApplication.sharedApplication().delegate
+    let delegate =  UIApplication.shared.delegate
     let rootController = delegate?.window??.rootViewController as? ActivityViewController
     if let appVC = rootController {
       appVC.performActivityOperation(self)

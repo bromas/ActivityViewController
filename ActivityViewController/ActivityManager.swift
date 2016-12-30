@@ -10,19 +10,19 @@ import Foundation
 import UIKit
 
 enum ActivityResult : CustomStringConvertible {
-  case Fresh(Activity)
-  case Retrieved(Activity)
-  case Current(Activity)
-  case Error
+  case fresh(Activity)
+  case retrieved(Activity)
+  case current(Activity)
+  case error
   
   internal var description : String {
     get {
       switch self {
-      case .Fresh(let activity):
+      case .fresh(let activity):
         return "Fresh: \(activity.identifier)"
-      case .Retrieved(let activity):
+      case .retrieved(let activity):
         return "Retrieved: \(activity.identifier)"
-      case .Current(let activity):
+      case .current(let activity):
         return "Current: \(activity.identifier)"
       default:
         return ""
@@ -35,44 +35,44 @@ internal class ActivityManager {
   
   var activeActivity : Activity?
   lazy var inactiveActivities: [Activity] = []
-  private let activityProvider = ActivityProvider()
+  fileprivate let activityProvider = ActivityProvider()
   
   init () { }
   
-  func registerStoryboardIdentifier(storyboard: String, forActivityIdentifier identifier: String) {
+  func registerStoryboardIdentifier(_ storyboard: String, forActivityIdentifier identifier: String) {
     activityProvider.registerStoryboardIdentifier(storyboard, forActivityIdentifier: identifier)
   }
   
-  func registerGenerator(identifier: String, generator: ActivityGenerator) {
+  func registerGenerator(_ identifier: String, generator: @escaping ActivityGenerator) {
     activityProvider.registerGenerator(identifier, generator: generator)
   }
   
-  func flushInactiveActivitiesForIdentifier(identifier: String) -> Void {
+  func flushInactiveActivitiesForIdentifier(_ identifier: String) -> Void {
     let containedActivity = inactiveActivities.filter{ $0.identifier == identifier }
     if let foundActivity = containedActivity.first {
-      inactiveActivities.removeAtIndex(inactiveActivities.indexOf(foundActivity)!)
+      inactiveActivities.remove(at: inactiveActivities.index(of: foundActivity)!)
       flushInactiveActivitiesForIdentifier(identifier)
     }
   }
   
-  func setController(controller: UIViewController, forActivityIdentifier identifier: String) -> Void {
+  func setController(_ controller: UIViewController, forActivityIdentifier identifier: String) -> Void {
     let new = Activity(identifier: identifier, controller: controller)
     inactiveActivities.append(new)
   }
   
-  func activityForIdentifier(identifier: String) -> ActivityResult {
+  func activityForIdentifier(_ identifier: String) -> ActivityResult {
     
     if activeActivity?.identifier == identifier
     {
-      return .Current(activeActivity!)
+      return .current(activeActivity!)
     }
     
     let containedActivity = inactiveActivities.filter{ $0.identifier == identifier }
     if let foundActivity = containedActivity.first {
-      inactiveActivities.removeAtIndex(inactiveActivities.indexOf(foundActivity)!)
+      inactiveActivities.remove(at: inactiveActivities.index(of: foundActivity)!)
       inactiveActivities.append(activeActivity!)
       activeActivity = foundActivity
-      return .Retrieved(foundActivity)
+      return .retrieved(foundActivity)
     }
     
     if let foundActivity = activeActivity {
@@ -80,17 +80,17 @@ internal class ActivityManager {
     }
     let activity = activityProvider.activityFromIdentifier(identifier)
     activeActivity = activity
-    return .Fresh(activeActivity!)
+    return .fresh(activeActivity!)
   }
   
   func viewControllerForPreviousActivity() -> ActivityResult {
     if inactiveActivities.count > 0 {
       let previousActivity = inactiveActivities.removeLast()
       activeActivity = previousActivity
-      return .Retrieved(previousActivity)
+      return .retrieved(previousActivity)
     }
     assert(false, "Attempted to move to a previous controller when none exists.")
-    return .Error
+    return .error
   }
   
 }

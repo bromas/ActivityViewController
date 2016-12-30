@@ -9,46 +9,46 @@
 import Foundation
 import UIKit
 
-public class CinematicWipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+open class CinematicWipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
   
-  public var animationDuration: NSTimeInterval = 1.0
-  private var isPresenting = true
+  open var animationDuration: TimeInterval = 1.0
+  fileprivate var isPresenting = true
   
-  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+  open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
     return animationDuration
   }
   
-  public func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-    let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-    let toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+  open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+    let fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)
+    let toView = transitionContext.view(forKey: UITransitionContextViewKey.to)
     toView!.translatesAutoresizingMaskIntoConstraints = false
-    let container = transitionContext.containerView()
+    let container = transitionContext.containerView
     
-    container!.insertSubview(toView!, atIndex: 0)
-    constrainSizeAndCenter(toView!, toView: container!)
-    container!.layoutIfNeeded()
+    container.insertSubview(toView!, at: 0)
+    constrainSizeAndCenter(toView!, toView: container)
+    container.layoutIfNeeded()
     
-    let toSnapshot = toView!.snapshotViewAfterScreenUpdates(true)
-    let snapshotContainer = UIView(frame: container!.bounds)
+    let toSnapshot = toView!.snapshotView(afterScreenUpdates: true)
+    let snapshotContainer = UIView(frame: container.bounds)
     snapshotContainer.translatesAutoresizingMaskIntoConstraints = false
-    toSnapshot.translatesAutoresizingMaskIntoConstraints = false
+    toSnapshot?.translatesAutoresizingMaskIntoConstraints = false
     snapshotContainer.clipsToBounds = true
-    snapshotContainer.backgroundColor = UIColor.blackColor()
+    snapshotContainer.backgroundColor = UIColor.black
     
-    container!.addSubview(snapshotContainer)
-    let width = constrainEdges(snapshotContainer, toView: container!)
-    width.constant = -container!.bounds.width
-    snapshotContainer.addSubview(toSnapshot)
-    let snapShotConstraints = constrainEdges(toSnapshot, toView: snapshotContainer)
+    container.addSubview(snapshotContainer)
+    let width = constrainEdges(snapshotContainer, toView: container)
+    width.constant = -container.bounds.width
+    snapshotContainer.addSubview(toSnapshot!)
+    let snapShotConstraints = constrainEdges(toSnapshot!, toView: snapshotContainer)
     snapshotContainer.removeConstraint(snapShotConstraints)
-    let widthConstraint = NSLayoutConstraint(item: toSnapshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1.0, constant: container!.bounds.width)
-    toSnapshot.addConstraint(widthConstraint)
-    container!.layoutIfNeeded()
+    let widthConstraint = NSLayoutConstraint(item: toSnapshot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1.0, constant: container.bounds.width)
+    toSnapshot?.addConstraint(widthConstraint)
+    container.layoutIfNeeded()
   
-    UIView.animateWithDuration(self.transitionDuration(transitionContext), delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+    UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0, options: UIViewAnimationOptions(), animations: { () -> Void in
       width.constant = 0
-      container!.layoutIfNeeded()
-      toSnapshot.layoutIfNeeded()
+      container.layoutIfNeeded()
+      toSnapshot?.layoutIfNeeded()
       }) { (complete) -> Void in
         fromView!.removeFromSuperview()
         snapshotContainer.removeFromSuperview()
@@ -57,26 +57,26 @@ public class CinematicWipeTransitionAnimator: NSObject, UIViewControllerAnimated
     }
   }
   
-  private func constrainSizeAndCenter(view: UIView, toView: UIView) -> (width: NSLayoutConstraint, height: NSLayoutConstraint, centerX: NSLayoutConstraint, centerY: NSLayoutConstraint) {
-    let height = NSLayoutConstraint(item: view,attribute: .Height, relatedBy: .Equal, toItem: toView, attribute: .Height, multiplier: 1.0, constant: 0.0)
+  fileprivate func constrainSizeAndCenter(_ view: UIView, toView: UIView) -> (width: NSLayoutConstraint, height: NSLayoutConstraint, centerX: NSLayoutConstraint, centerY: NSLayoutConstraint) {
+    let height = NSLayoutConstraint(item: view,attribute: .height, relatedBy: .equal, toItem: toView, attribute: .height, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(height)
-    let width = NSLayoutConstraint(item: view, attribute: .Width, relatedBy: .Equal, toItem: toView, attribute: .Width, multiplier: 1.0, constant: 0.0)
+    let width = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: toView, attribute: .width, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(width)
-    let centerY = NSLayoutConstraint(item: view, attribute: .CenterY, relatedBy: .Equal, toItem: toView, attribute: .CenterY, multiplier: 1.0, constant: 0.0)
+    let centerY = NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal, toItem: toView, attribute: .centerY, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(centerY)
-    let centerX = NSLayoutConstraint(item: view, attribute: .CenterX, relatedBy: .Equal, toItem: toView, attribute: .CenterX, multiplier: 1.0, constant: 0.0)
+    let centerX = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: toView, attribute: .centerX, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(centerX)
     return (width, height, centerX, centerY)
   }
   
-  private func constrainEdges(view: UIView, toView: UIView) -> NSLayoutConstraint {
-    let top = NSLayoutConstraint(item: view,attribute: .Top, relatedBy: .Equal, toItem: toView, attribute: .Top, multiplier: 1.0, constant: 0.0)
+  fileprivate func constrainEdges(_ view: UIView, toView: UIView) -> NSLayoutConstraint {
+    let top = NSLayoutConstraint(item: view,attribute: .top, relatedBy: .equal, toItem: toView, attribute: .top, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(top)
-    let bottom = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: toView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+    let bottom = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: toView, attribute: .bottom, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(bottom)
-    let right = NSLayoutConstraint(item: view, attribute: .Right, relatedBy: .Equal, toItem: toView, attribute: .Right, multiplier: 1.0, constant: 0.0)
+    let right = NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: toView, attribute: .right, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(right)
-    let width = NSLayoutConstraint(item: view, attribute: .Width, relatedBy: .Equal, toItem: toView, attribute: .Width, multiplier: 1.0, constant: 0.0)
+    let width = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: toView, attribute: .width, multiplier: 1.0, constant: 0.0)
     toView.addConstraint(width)
     return width
   }

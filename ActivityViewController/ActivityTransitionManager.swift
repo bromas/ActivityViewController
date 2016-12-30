@@ -11,7 +11,7 @@ import UIKit
 
 internal class ActivityTransitionManager {
   
-  private let managedContainer : ActivityViewController
+  fileprivate let managedContainer : ActivityViewController
   internal var activeVC : UIViewController?
   
   internal var animating: Bool = false
@@ -30,27 +30,27 @@ internal class ActivityTransitionManager {
 /**
   An 'active controller's view should be contained in a UIView subview of the container controller to operate correctly with all transition types.
 */
-  func configureActiveController(controller: UIViewController) {
+  func configureActiveController(_ controller: UIViewController) {
     activeVC = controller
   }
   
-  func completionGen(operation: ActivityOperation) -> (() -> Void) {
+  func completionGen(_ operation: ActivityOperation) -> (() -> Void) {
     return { [unowned self] _ in
       operation.completionBlock()
       self.managedContainer.animating = false
     }
   }
   
-  internal func transitionToVC(controller: UIViewController, withOperation operation: ActivityOperation) {
+  internal func transitionToVC(_ controller: UIViewController, withOperation operation: ActivityOperation) {
     if let activeVCUnwrapped = activeVC {
       switch operation.type {
-      case .AnimationOption:
+      case .animationOption:
         self.managedContainer.animating = true
         typeAnimator.animate(operation.animationOption, fromVC: activeVCUnwrapped, toVC: controller, withDuration: operation.animationDuration, completion: completionGen(operation))
-      case .NonInteractiveTransition:
+      case .nonInteractiveTransition:
         self.managedContainer.animating = true
         noninteractiveTransitionManager.animate(operation.nonInteractiveTranstionanimator, fromVC: activeVCUnwrapped, toVC: controller, completion: completionGen(operation))
-      case .None:
+      case .none:
         initializeDisplayWithController(controller)
         removeController(activeVCUnwrapped)
       default:
@@ -62,22 +62,22 @@ internal class ActivityTransitionManager {
     }
   }
   
-  private func initializeDisplayWithController(controller: UIViewController) {
-    let container = UIView(frame: CGRectZero)
+  fileprivate func initializeDisplayWithController(_ controller: UIViewController) {
+    let container = UIView(frame: CGRect.zero)
     container.translatesAutoresizingMaskIntoConstraints = false
     managedContainer.view.addSubview(container)
     constrainEdgesOf(container, toEdgesOf: managedContainer.view)
     prepareContainmentFor(controller, inController: managedContainer)
     container.addSubview(controller.view)
     constrainEdgesOf(controller.view, toEdgesOf: container)
-    controller.didMoveToParentViewController(managedContainer);
+    controller.didMove(toParentViewController: managedContainer);
     self.activeVC = controller
   }
   
-  private func removeController(controller: UIViewController) {
-    controller.willMoveToParentViewController(nil)
+  fileprivate func removeController(_ controller: UIViewController) {
+    controller.willMove(toParentViewController: nil)
     controller.view.removeFromSuperview()
-    controller.didMoveToParentViewController(nil)
+    controller.didMove(toParentViewController: nil)
   }
   
 }

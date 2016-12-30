@@ -13,14 +13,14 @@ import ActivityViewController
 class ScreenOne : UIViewController {
   
   @IBAction func authButtonTapped() {
-    ActivityOperation(rule: .Any, identifier: "Generator", animator: CircleTransitionAnimator(direction: .Inward, duration: 0.5)).execute()
+    ActivityOperation(rule: .any, identifier: "Generator", animator: CircleTransitionAnimator(direction: .inward, duration: 0.5)).execute()
   }
   
   @IBAction func embedButtonTapped() {
-    ActivityOperation(rule: .Any, identifier: "Authentication", animator: ShrinkDismissAnimator()).execute()
+    ActivityOperation(rule: .any, identifier: "Authentication", animator: ShrinkDismissAnimator()).execute()
   }
   
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
   }
   

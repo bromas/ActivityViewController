@@ -11,19 +11,19 @@ import UIKit
 
 public typealias ActivityGenerator = () -> UIViewController
 
-public class ActivityViewController : UIViewController {
+open class ActivityViewController : UIViewController {
 
   internal var transitionManager: ActivityTransitionManager!
   
   internal let activitiesManager: ActivityManager = ActivityManager()
   
-  public var enableLogging: Bool = false
-  public var animating: Bool = false
+  open var enableLogging: Bool = false
+  open var animating: Bool = false
   
-  public var initialActivityIdentifier: String?
+  open var initialActivityIdentifier: String?
   
-  private var _activeController: UIViewController?
-  public var activeViewController : UIViewController? {
+  fileprivate var _activeController: UIViewController?
+  open var activeViewController : UIViewController? {
     get { return _activeController }
     set {
       _activeController = newValue
@@ -33,68 +33,68 @@ public class ActivityViewController : UIViewController {
     }
   }
   
-  public var activityConfigurationClosure: (identifer: String, controller: UIViewController) -> () = { identifier, controller in
+  open var activityConfigurationClosure: (_ identifer: String, _ controller: UIViewController) -> () = { identifier, controller in
     
   }
   
-  public override func viewDidLoad() {
+  open override func viewDidLoad() {
     super.viewDidLoad()
     transitionManager = ActivityTransitionManager(containerController: self)
   }
   
-  public override func viewWillAppear(animated: Bool) {
+  open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     if let foundIdentifier = initialActivityIdentifier {
-      self.performActivityOperation(ActivityOperation(rule: .New, identifier: foundIdentifier))
+      self.performActivityOperation(ActivityOperation(rule: .new, identifier: foundIdentifier))
     }
   }
   
-  public func prepareActivity(activity: String, controller: UIViewController) -> Void {
-    activityConfigurationClosure(identifer: activity, controller: controller)
+  open func prepareActivity(_ activity: String, controller: UIViewController) -> Void {
+    activityConfigurationClosure(activity, controller)
   }
   
-  public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) { }
+  open override func prepare(for segue: UIStoryboardSegue, sender: Any?) { }
   
-  public func configureInitialActivityIdentifier(identifier: String) {
+  open func configureInitialActivityIdentifier(_ identifier: String) {
     initialActivityIdentifier = identifier
   }
   
-  public func registerStoryboardIdentifier(storyboard: String, forActivityIdentifier identifier: String) {
+  open func registerStoryboardIdentifier(_ storyboard: String, forActivityIdentifier identifier: String) {
     activitiesManager.registerStoryboardIdentifier(storyboard, forActivityIdentifier: identifier)
   }
   
-  public func registerGenerator(identifier: String, generator: ActivityGenerator) {
+  open func registerGenerator(_ identifier: String, generator: @escaping ActivityGenerator) {
     activitiesManager.registerGenerator(identifier, generator: generator)
   }
   
-  public func flushInactiveActivitiesForIdentifier(identifier: String) {
+  open func flushInactiveActivitiesForIdentifier(_ identifier: String) {
     activitiesManager.flushInactiveActivitiesForIdentifier(identifier)
   }
   
-  public func performActivityOperation(operation: ActivityOperation) {
+  open func performActivityOperation(_ operation: ActivityOperation) {
     let activityResult: ActivityResult
     switch operation.selectRule {
-    case .New:
+    case .new:
       activitiesManager.flushInactiveActivitiesForIdentifier(operation.activityIdentifier)
       activityResult = activitiesManager.activityForIdentifier(operation.activityIdentifier)
-    case .Any:
+    case .any:
       activityResult = activitiesManager.activityForIdentifier(operation.activityIdentifier)
-    case .Previous:
+    case .previous:
       activityResult = activitiesManager.viewControllerForPreviousActivity()
     }
     processActivityResult(activityResult, withOperation: operation)
   }
   
-  func processActivityResult(activityResult: ActivityResult, withOperation operation: ActivityOperation) -> Void {
+  func processActivityResult(_ activityResult: ActivityResult, withOperation operation: ActivityOperation) -> Void {
     if enableLogging { print("Activity: \(activityResult)") }
     switch activityResult {
-    case .Fresh(let activity):
+    case .fresh(let activity):
       self.prepareActivity(activity.identifier, controller: activity.controller)
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
-    case .Retrieved(let activity):
+    case .retrieved(let activity):
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
-    case .Current(_): break
-    case .Error: break
+    case .current(_): break
+    case .error: break
     }
   }
   

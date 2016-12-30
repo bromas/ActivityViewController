@@ -11,26 +11,26 @@ import UIKit
 
 internal struct AnimateNonInteractiveTransitionManager {
   
-  private let managedContainer : UIViewController
+  fileprivate let managedContainer : UIViewController
   
   init (containerController: UIViewController) {
     managedContainer = containerController
   }
   
-  internal func animate(animator: UIViewControllerAnimatedTransitioning, fromVC: UIViewController, toVC: UIViewController, completion: () -> Void = { }) {
+  internal func animate(_ animator: UIViewControllerAnimatedTransitioning, fromVC: UIViewController, toVC: UIViewController, completion: @escaping () -> Void = { }) {
     prepareAutoresizingContainmentFor(toVC, inController: managedContainer)
-    fromVC.willMoveToParentViewController(nil);
+    fromVC.willMove(toParentViewController: nil);
     
     let transitionContext = NonInteractiveTransitionContext(managedController: managedContainer, fromViewController: fromVC, toViewController: toVC)
     
     transitionContext.completionBlock = { completed in
       fromVC.view.removeFromSuperview()
       fromVC.removeFromParentViewController()
-      toVC.didMoveToParentViewController(self.managedContainer)
+      toVC.didMove(toParentViewController: self.managedContainer)
       animator.animationEnded?(completed)
       completion()
     }
     
-    animator.animateTransition(transitionContext)
+    animator.animateTransition(using: transitionContext)
   }
 }
