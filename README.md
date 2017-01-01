@@ -8,7 +8,7 @@ github "bromas/ActivityViewController"
 ```
 to your Cartfile
 
-Using [Cocoapods](https://guides.cocoapods.org/using/index.html) add
+Using [CocoaPods](https://guides.cocoapods.org/using/index.html) add
 ```ruby
 use_frameworks!
 pod 'ActivityViewController', '~> 1.0'
