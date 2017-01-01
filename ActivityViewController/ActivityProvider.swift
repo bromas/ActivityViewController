@@ -20,32 +20,28 @@ func ==(lhs: Activity, rhs: Activity) -> Bool {
 
 internal class ActivityProvider {
   
-  private var activityStoryboardNames: [String : String] = [String : String]()
-  private var activityGenerators: [String: ActivityGenerator] = ["defaultController": { return UIViewController() }]
+  fileprivate var activityStoryboardNames: [String : String] = [String : String]()
+  fileprivate var activityGenerators: [String: ActivityGenerator] = ["defaultController": { return UIViewController() }]
   
   init () { }
   
-  func registerStoryboardIdentifier(storyboard: String, forActivityIdentifier identifier: String) {
-    self.activityStoryboardNames[identifier] = storyboard
-  }
-  
-  func registerGenerator(identifier: String, generator: ActivityGenerator) {
+  func registerGenerator(_ identifier: String, generator: @escaping ActivityGenerator) {
     self.activityGenerators[identifier] = generator
   }
   
-  func activityFromIdentifier(identifier: String) -> Activity {
+  // Checks first for a generator and then for a storyboard with the identifiers name - loads the initial view controller.
+  func activityFromIdentifier(_ identifier: String) -> Activity {
     var controller: UIViewController
     if let generator = activityGenerators[identifier] {
       controller = generator()
     } else {
-      let storyboardName = self.activityStoryboardNames[storyboardIdentifierFromActivityIdentifier(identifier)] ?? identifier
-      controller = self.loadStoryboard(storyboardName, withActivityName: identifier)
+      controller = self.loadStoryboard(withActivityName: identifier)
     }
     return Activity(identifier: identifier, controller: controller)
   }
   
-  private func loadStoryboard(storyboardName: String, withActivityName activity: String) -> UIViewController {
-    let controller = UIStoryboard(name: storyboardName, bundle: NSBundle.mainBundle()).instantiateInitialViewController()
+  fileprivate func loadStoryboard(withActivityName activity: String) -> UIViewController {
+    let controller = UIStoryboard(name: activity, bundle: Bundle.main).instantiateInitialViewController()
     if let initialized = controller {
       return initialized
     }
@@ -54,18 +50,18 @@ internal class ActivityProvider {
   }
 }
 
-func storyboardIdentifierFromActivityIdentifier(identifier: String) -> String {
-  if identifier.rangeOfString("#") != nil {
-    return identifier.componentsSeparatedByString("#")[0]
+func storyboardIdentifierFromActivityIdentifier(_ identifier: String) -> String {
+  if identifier.range(of: "#") != nil {
+    return identifier.components(separatedBy: "#")[0]
   } else {
     return identifier
   }
 }
 
-func controllerForStoryboard(storyboard: String, activityName: String) -> UIViewController? {
-  if activityName.rangeOfString("#") != nil {
-    let boardName = activityName.componentsSeparatedByString("#")
-    return UIStoryboard(name: storyboard, bundle: NSBundle.mainBundle()).instantiateViewControllerWithIdentifier(boardName[1])
+func controllerForStoryboard(_ storyboard: String, activityName: String) -> UIViewController? {
+  if activityName.range(of: "#") != nil {
+    let boardName = activityName.components(separatedBy: "#")
+    return UIStoryboard(name: storyboard, bundle: Bundle.main).instantiateViewController(withIdentifier: boardName[1])
   } else {
     
   }

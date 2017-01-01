@@ -10,38 +10,38 @@ import Foundation
 import UIKit
 
 class ShrinkAnimator : NSObject, UIViewControllerAnimatedTransitioning {
-  func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
     return 0.7
   }
   
-  func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+  func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
     
-    let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-    let toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+    let fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)
+    let toView = transitionContext.view(forKey: UITransitionContextViewKey.to)
     toView!.translatesAutoresizingMaskIntoConstraints = false
-    let container = transitionContext.containerView()
+    let container = transitionContext.containerView
     
-    container!.addSubview(toView!)
-    constrainEdgesOf(toView!, toEdgesOf: container!)
-    container!.layoutIfNeeded()
+    container.addSubview(toView!)
+    constrainEdgesOf(toView!, toEdgesOf: container)
+    container.layoutIfNeeded()
     toView?.alpha = 0
     
     let animations = { () -> Void in
-      fromView?.transform = CGAffineTransformMakeScale(0.1, 0.1)
+      fromView?.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
       toView?.alpha = 1
       return
     }
     
     let completion : (Bool) -> Void = { (didComplete) in
-      fromView?.transform = CGAffineTransformIdentity
-      transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+      fromView?.transform = CGAffineTransform.identity
+      transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
       return
     }
     
-    UIView.animateWithDuration(0.7, animations: animations, completion: completion)
+    UIView.animate(withDuration: 0.7, animations: animations, completion: completion)
   }
   
-  func animationEnded(transitionCompleted: Bool) {
+  func animationEnded(_ transitionCompleted: Bool) {
     
   }
   

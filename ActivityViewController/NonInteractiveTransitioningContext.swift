@@ -11,59 +11,64 @@ import UIKit
 
 internal class NonInteractiveTransitionContext : NSObject, UIViewControllerContextTransitioning {
   
-  private let managedController: UIViewController
-  private let fromViewController: UIViewController
-  private let toViewController: UIViewController
-  private let container: UIView
+  @available(iOS 10.0, *)
+  public func pauseInteractiveTransition() {
+    return
+  }
   
-  private let viewControllers: [String : UIViewController]
-  private let views: [String : UIView]
+  fileprivate let managedController: UIViewController
+  fileprivate let fromViewController: UIViewController
+  fileprivate let toViewController: UIViewController
+  fileprivate let container: UIView
   
-  func viewControllerForKey(key: String) -> UIViewController? { return viewControllers[key] }
-  func viewForKey(key: String) -> UIView? { return views[key] }
+  fileprivate let viewControllers: [UITransitionContextViewControllerKey : UIViewController]
+  fileprivate let views: [UITransitionContextViewKey : UIView]
+  
+  func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController? { return viewControllers[key] }
+  func view(forKey key: UITransitionContextViewKey) -> UIView? { return views[key] }
   
   init(managedController: UIViewController, fromViewController: UIViewController, toViewController: UIViewController) {
     self.managedController = managedController
     self.fromViewController = fromViewController
     self.toViewController = toViewController
     self.container = fromViewController.view.superview!
-    self.viewControllers = [UITransitionContextFromViewControllerKey : fromViewController, UITransitionContextToViewControllerKey : toViewController]
-    self.views = [UITransitionContextFromViewKey: fromViewController.view, UITransitionContextToViewKey: toViewController.view]
+    self.viewControllers = [UITransitionContextViewControllerKey(rawValue: UITransitionContextViewControllerKey.from.rawValue) : fromViewController, UITransitionContextViewControllerKey(rawValue: UITransitionContextViewControllerKey.to.rawValue) : toViewController]
+    self.views = [UITransitionContextViewKey(rawValue: UITransitionContextViewKey.from.rawValue): fromViewController.view, UITransitionContextViewKey(rawValue: UITransitionContextViewKey.to.rawValue): toViewController.view]
     super.init()
   }
   
   var completionBlock : (Bool) -> Void = { (someBool) in }
-  func completeTransition(didComplete: Bool) {
+  func completeTransition(_ didComplete: Bool) {
     completionBlock(didComplete)
   }
   
-  func containerView() -> UIView? { return container }
+  var containerView : UIView { return container }
   
-  func initialFrameForViewController(vc: UIViewController) -> CGRect {
-    if vc == viewControllers[UITransitionContextFromViewControllerKey] {
+  func initialFrame(for vc: UIViewController) -> CGRect {
+    if vc == viewControllers[UITransitionContextViewControllerKey.from] {
       return self.managedController.view.frame
     } else {
-      return CGRectZero
+      return CGRect.zero
     }
   }
   
-  func finalFrameForViewController(vc: UIViewController) -> CGRect {
-    if vc == viewControllers[UITransitionContextFromViewControllerKey] {
-      return CGRectZero
+  func finalFrame(for vc: UIViewController) -> CGRect {
+    if vc == viewControllers[UITransitionContextViewControllerKey.from] {
+      return CGRect.zero
     } else {
       return self.managedController.view.frame
     }
   }
   
   // Defaults for a custom animated noninteractive transition
-  func isAnimated() -> Bool { return true }
-  func isInteractive() -> Bool { return false }
-  func presentationStyle() -> UIModalPresentationStyle { return UIModalPresentationStyle.Custom }
-  func targetTransform() -> CGAffineTransform { return CGAffineTransform(a: 0, b: 0, c: 0, d: 0, tx: 0, ty: 0) }
+  var isAnimated : Bool { return true }
+  var isInteractive : Bool { return false }
+  var presentationStyle : UIModalPresentationStyle { return UIModalPresentationStyle.custom }
+  var targetTransform : CGAffineTransform { return CGAffineTransform(a: 0, b: 0, c: 0, d: 0, tx: 0, ty: 0) }
   
   // Interactive Transitioning / Transform
-  func transitionWasCancelled() -> Bool { return false }
-  func updateInteractiveTransition(percentComplete: CGFloat) { }
+  var transitionWasCancelled : Bool { return false }
+  func updateInteractiveTransition(_ percentComplete: CGFloat) { }
   func finishInteractiveTransition() { }
   func cancelInteractiveTransition() { }
 }

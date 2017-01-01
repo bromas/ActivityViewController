@@ -24,6 +24,7 @@
 		D373853C1AFBF8310006766C /* ActivitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D373853B1AFBF8310006766C /* ActivitiesViewController.swift */; };
 		D381412F1AF7E10200022F35 /* CircleTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D381412E1AF7E10200022F35 /* CircleTransitionAnimator.swift */; };
 		D38141321AF7E78200022F35 /* GeneratedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38141311AF7E78200022F35 /* GeneratedController.swift */; };
+		D3C1FC331E198D660009779B /* NoXibController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C1FC321E198D660009779B /* NoXibController.swift */; };
 		D3EAC3C71AA3CAEF00758A35 /* ShrinkAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EAC3C61AA3CAEF00758A35 /* ShrinkAnimator.swift */; };
 		D3EAC3F71AA42E4B00758A35 /* SpringSlideAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EAC3F61AA42E4B00758A35 /* SpringSlideAnimator.swift */; };
 		D3F3B12D1A22848A008BE143 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F3B12C1A22848A008BE143 /* AppDelegate.swift */; };
@@ -97,6 +98,7 @@
 		D381412E1AF7E10200022F35 /* CircleTransitionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTransitionAnimator.swift; sourceTree = "<group>"; };
 		D38141311AF7E78200022F35 /* GeneratedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedController.swift; sourceTree = "<group>"; };
 		D38141331AF81D7100022F35 /* ApplicationVCSample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ApplicationVCSample-Bridging-Header.h"; sourceTree = "<group>"; };
+		D3C1FC321E198D660009779B /* NoXibController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoXibController.swift; sourceTree = "<group>"; };
 		D3EAC3C61AA3CAEF00758A35 /* ShrinkAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShrinkAnimator.swift; sourceTree = "<group>"; };
 		D3EAC3F61AA42E4B00758A35 /* SpringSlideAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpringSlideAnimator.swift; sourceTree = "<group>"; };
 		D3F3B1271A22848A008BE143 /* ApplicationVCSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ApplicationVCSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -162,6 +164,14 @@
 			name = Animator;
 			sourceTree = "<group>";
 		};
+		D3C1FC311E198D510009779B /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D3C1FC321E198D660009779B /* NoXibController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		D3C8D2161AA36D22000973E3 /* TransitionManagers */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +217,7 @@
 		D3F3B1291A22848A008BE143 /* ApplicationVCSample */ = {
 			isa = PBXGroup;
 			children = (
+				D3C1FC311E198D510009779B /* Controller */,
 				D38141301AF7E76E00022F35 /* Animator */,
 				D338F2321A3105010003A258 /* Delegates */,
 				D3F3B1301A22848A008BE143 /* Main.storyboard */,
@@ -351,12 +362,15 @@
 				TargetAttributes = {
 					D3F3B1261A22848A008BE143 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0820;
 					};
 					D3F9C19E1A956CD90013CC86 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 0820;
 					};
 					D3F9C1A81A956CD90013CC86 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 0820;
 						TestTargetID = D3F3B1261A22848A008BE143;
 					};
 				};
@@ -415,6 +429,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3C1FC331E198D660009779B /* NoXibController.swift in Sources */,
 				D3F3B1761A2287A2008BE143 /* ScreenOne.swift in Sources */,
 				D3EAC3C71AA3CAEF00758A35 /* ShrinkAnimator.swift in Sources */,
 				D34477971AA4F188005BC0A3 /* ShrinkDismissAnimartor.swift in Sources */,
@@ -584,6 +599,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ApplicationVCSample/ApplicationVCSample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -597,6 +613,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.brianthomas.www.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ApplicationVCSample/ApplicationVCSample-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -620,6 +637,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -641,6 +659,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.brianthomas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -662,6 +681,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.brianthomas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ApplicationVCSample.app/ApplicationVCSample";
 			};
 			name = Debug;
@@ -677,6 +697,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.brianthomas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ApplicationVCSample.app/ApplicationVCSample";
 			};
 			name = Release;

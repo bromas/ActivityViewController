@@ -11,36 +11,36 @@ import UIKit
 import QuartzCore
 
 public enum CircleMaskDirection {
-  case Inward
-  case Outward
+  case inward
+  case outward
 }
 
-public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+open class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning, CAAnimationDelegate {
   
-  public var animationDuration: NSTimeInterval = 0.6
-  public var maskingDirection: CircleMaskDirection = .Inward
+  open var animationDuration: TimeInterval = 0.6
+  open var maskingDirection: CircleMaskDirection = .inward
   
-  private var currentTransitionContext: UIViewControllerContextTransitioning?
-  private var fromView: UIView!
-  private var toView: UIView!
-  private var container: UIView!
+  fileprivate var currentTransitionContext: UIViewControllerContextTransitioning?
+  fileprivate var fromView: UIView!
+  fileprivate var toView: UIView!
+  fileprivate var container: UIView!
   
-  public init(direction: CircleMaskDirection, duration: NSTimeInterval) {
+  public init(direction: CircleMaskDirection, duration: TimeInterval) {
     animationDuration = duration
     maskingDirection = direction
     super.init()
   }
   
-  public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+  open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
     return animationDuration
   }
   
-  public func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+  open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
     
     currentTransitionContext = transitionContext
-    fromView = (transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey))?.view!
-    toView = (transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey))?.view!
-    container = transitionContext.containerView()
+    fromView = (transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from))?.view!
+    toView = (transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to))?.view!
+    container = transitionContext.containerView
     
     let x = container.bounds.size.width / 2.0
     let y = container.bounds.size.height / 2.0
@@ -50,19 +50,19 @@ public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransit
     let yDifference = circleRadius - y
     
     let rect = CGRect(x: -xDifference/2.0, y: -yDifference/2.0, width: 2.0 * circleRadius, height: 2.0 * circleRadius)
-    let insetRect = CGRectInset(rect, rect.size.width / 2.0 - 2.0, rect.size.height / 2.0 - 2.0)
-    let smallPath = CGPathCreateWithEllipseInRect(insetRect, nil)
-    let fullPath = CGPathCreateWithEllipseInRect(rect, nil)
+    let insetRect = rect.insetBy(dx: rect.size.width / 2.0 - 2.0, dy: rect.size.height / 2.0 - 2.0)
+    let smallPath = CGPath(ellipseIn: insetRect, transform: nil)
+    let fullPath = CGPath(ellipseIn: rect, transform: nil)
     
     let maskLayer = circularMaskLayer(rect)
     maskLayer.path = smallPath
     
     let maskedView: UIView
     switch maskingDirection {
-    case .Inward:
+    case .inward:
       maskedView = fromView
-      container.insertSubview(toView, atIndex: 0)
-    case .Outward:
+      container.insertSubview(toView, at: 0)
+    case .outward:
       maskedView = toView
       container.addSubview(toView)
     }
@@ -71,46 +71,46 @@ public class CircleTransitionAnimator: NSObject, UIViewControllerAnimatedTransit
     maskLayer.masksToBounds = true
     
     let animation = CABasicAnimation(keyPath: "path")
-    animation.duration = self.transitionDuration(transitionContext)
+    animation.duration = self.transitionDuration(using: transitionContext)
     animation.delegate = self
     animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
     
     switch maskingDirection {
-    case .Inward:
+    case .inward:
       animation.fromValue = fullPath
       animation.toValue = smallPath
-    case .Outward:
+    case .outward:
       animation.fromValue = smallPath
       animation.toValue = fullPath
     }
     
-    maskLayer.addAnimation(animation, forKey: "MaskLayerAnimation")
+    maskLayer.add(animation, forKey: "MaskLayerAnimation")
     
     switch maskingDirection {
-    case .Inward:
+    case .inward:
       maskLayer.path = smallPath
-    case .Outward:
+    case .outward:
       maskLayer.path = fullPath
     }
   }
   
-  private func circularMaskLayer(frame: CGRect) -> CAShapeLayer {
+  fileprivate func circularMaskLayer(_ frame: CGRect) -> CAShapeLayer {
     let layer = CAShapeLayer()
-    layer.fillColor = UIColor.blackColor().CGColor
+    layer.fillColor = UIColor.black.cgColor
     layer.frame = frame
-    layer.path = CGPathCreateWithEllipseInRect(frame, nil)
+    layer.path = CGPath(ellipseIn: frame, transform: nil)
     return layer
   }
   
-  override public func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+  open func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
     if flag {
       toView.layer.masksToBounds = false
       fromView.layer.masksToBounds = false
       toView.layer.mask = nil
       fromView.layer.mask = nil
       fromView.removeFromSuperview()
-      toView = .None
-      fromView = .None
+      toView = .none
+      fromView = .none
       currentTransitionContext?.completeTransition(true)
       currentTransitionContext = nil
     }

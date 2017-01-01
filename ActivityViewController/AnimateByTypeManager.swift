@@ -11,15 +11,15 @@ import UIKit
 
 internal struct AnimateByTypeManager {
   
-  private let managedContainer : UIViewController
+  fileprivate let managedContainer : UIViewController
   
   init (containerController: UIViewController) {
     managedContainer = containerController
   }
   
-  internal func animate(animationType:UIViewAnimationOptions, fromVC: UIViewController, toVC: UIViewController, withDuration duration: NSTimeInterval, completion: () -> Void = { }) {
+  internal func animate(_ animationType:UIViewAnimationOptions, fromVC: UIViewController, toVC: UIViewController, withDuration duration: TimeInterval, completion: @escaping () -> Void = { }) {
     prepareContainmentFor(toVC, inController: managedContainer)
-    fromVC.willMoveToParentViewController(nil);
+    fromVC.willMove(toParentViewController: nil);
     
     let animations = { () -> Void in
       constrainEdgesOf(toVC.view, toEdgesOf: fromVC.view.superview!)
@@ -27,10 +27,10 @@ internal struct AnimateByTypeManager {
     
     let completion : (Bool) -> Void = { completed in
       fromVC.removeFromParentViewController();
-      toVC.didMoveToParentViewController(self.managedContainer);
+      toVC.didMove(toParentViewController: self.managedContainer);
       completion()
     }
     
-    managedContainer.transitionFromViewController(fromVC, toViewController: toVC, duration: duration, options: animationType, animations: animations, completion: completion)
+    managedContainer.transition(from: fromVC, to: toVC, duration: duration, options: animationType, animations: animations, completion: completion)
   }
 }

@@ -11,10 +11,8 @@ import UIKit
 
 internal class ActivityTransitionManager {
   
-  private let managedContainer : ActivityViewController
+  fileprivate let managedContainer : ActivityViewController
   internal var activeVC : UIViewController?
-  
-  internal var animating: Bool = false
   
   lazy internal var typeAnimator: AnimateByTypeManager = {
     return AnimateByTypeManager(containerController: self.managedContainer)
@@ -27,57 +25,77 @@ internal class ActivityTransitionManager {
     managedContainer = containerController
   }
   
+  var containerView: UIView? = .none
+  
 /**
   An 'active controller's view should be contained in a UIView subview of the container controller to operate correctly with all transition types.
 */
-  func configureActiveController(controller: UIViewController) {
-    activeVC = controller
+  
+  internal func transitionToVC(_ controller: UIViewController, withOperation operation: ActivityOperation) {
+    if let activeVCUnwrapped = activeVC {
+      switch operation.type {
+      case .animationOption:
+        self.managedContainer.animating = true
+        typeAnimator.animate(operation.animationOption, fromVC: activeVCUnwrapped, toVC: controller, withDuration: operation.animationDuration, completion: completionGen(operation))
+      case .nonInteractiveTransition:
+        self.managedContainer.animating = true
+        noninteractiveTransitionManager.animate(operation.nonInteractiveTranstionanimator, fromVC: activeVCUnwrapped, toVC: controller, completion: completionGen(operation))
+      case .none:
+        _ = swapToControllerUnanimated(controller, fromController: activeVCUnwrapped)
+      default:
+        assert(false, "You called for a transition with an invalid operation... How did you even do that!?")
+      }
+      activeVC = controller
+    } else {
+      _ = initializeDisplayWithController(controller)
+    }
   }
   
-  func completionGen(operation: ActivityOperation) -> (() -> Void) {
+  fileprivate func completionGen(_ operation: ActivityOperation) -> (() -> Void) {
     return { [unowned self] _ in
       operation.completionBlock()
       self.managedContainer.animating = false
     }
   }
   
-  internal func transitionToVC(controller: UIViewController, withOperation operation: ActivityOperation) {
-    if let activeVCUnwrapped = activeVC {
-      switch operation.type {
-      case .AnimationOption:
-        self.managedContainer.animating = true
-        typeAnimator.animate(operation.animationOption, fromVC: activeVCUnwrapped, toVC: controller, withDuration: operation.animationDuration, completion: completionGen(operation))
-      case .NonInteractiveTransition:
-        self.managedContainer.animating = true
-        noninteractiveTransitionManager.animate(operation.nonInteractiveTranstionanimator, fromVC: activeVCUnwrapped, toVC: controller, completion: completionGen(operation))
-      case .None:
-        initializeDisplayWithController(controller)
-        removeController(activeVCUnwrapped)
-      default:
-        assert(false, "You called for a transition with an invalid operation... How did you even do that!?")
-      }
-      activeVC = controller
-    } else {
-      initializeDisplayWithController(controller)
+  fileprivate func swapToControllerUnanimated(_ controller: UIViewController, fromController: UIViewController) -> Bool {
+    guard let container = containerView else {
+      return false
     }
-  }
-  
-  private func initializeDisplayWithController(controller: UIViewController) {
-    let container = UIView(frame: CGRectZero)
-    container.translatesAutoresizingMaskIntoConstraints = false
-    managedContainer.view.addSubview(container)
-    constrainEdgesOf(container, toEdgesOf: managedContainer.view)
+    
+    removeController(fromController)
+    self.activeVC = .none
+    
     prepareContainmentFor(controller, inController: managedContainer)
     container.addSubview(controller.view)
     constrainEdgesOf(controller.view, toEdgesOf: container)
-    controller.didMoveToParentViewController(managedContainer);
+    controller.didMove(toParentViewController: managedContainer);
+    
     self.activeVC = controller
+    return true
   }
   
-  private func removeController(controller: UIViewController) {
-    controller.willMoveToParentViewController(nil)
+  func initializeDisplayWithController(_ controller: UIViewController) -> Bool {
+    let container = UIView(frame: CGRect.zero)
+    container.translatesAutoresizingMaskIntoConstraints = false
+    managedContainer.view.addSubview(container)
+    constrainEdgesOf(container, toEdgesOf: managedContainer.view)
+    containerView = container
+    managedContainer.configureContainerView(container)
+    
+    prepareContainmentFor(controller, inController: managedContainer)
+    container.addSubview(controller.view)
+    constrainEdgesOf(controller.view, toEdgesOf: container)
+    controller.didMove(toParentViewController: managedContainer);
+    
+    self.activeVC = controller
+    return true
+  }
+  
+  fileprivate func removeController(_ controller: UIViewController) {
+    controller.willMove(toParentViewController: nil)
     controller.view.removeFromSuperview()
-    controller.didMoveToParentViewController(nil)
+    controller.didMove(toParentViewController: nil)
   }
   
 }
