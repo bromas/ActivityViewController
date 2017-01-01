@@ -13,29 +13,25 @@ public typealias ActivityGenerator = () -> UIViewController
 
 open class ActivityViewController : UIViewController {
 
-  internal var transitionManager: ActivityTransitionManager!
-  
-  internal let activitiesManager: ActivityManager = ActivityManager()
-  
   open var enableLogging: Bool = false
   open var animating: Bool = false
   
+  internal var transitionManager: ActivityTransitionManager!
+  internal let activitiesManager: ActivityManager = ActivityManager()
+  
   open var initialActivityIdentifier: String?
   
-  fileprivate var _activeController: UIViewController?
-  open var activeViewController : UIViewController? {
-    get { return _activeController }
-    set {
-      _activeController = newValue
-      if let found = newValue {
-        transitionManager.configureActiveController(found)
-      }
-    }
-  }
+  // Runs on the first display of a controller.
+  open var configureContainerView: (UIView) -> () = { view in }
   
-  open var activityConfigurationClosure: (_ identifer: String, _ controller: UIViewController) -> () = { identifier, controller in
-    
-  }
+  // Runs when an activity is first initialized
+  open var activityInitiationClosure: (_ identifer: String, _ controller: UIViewController) -> () = { identifier, controller in }
+  
+  // Runs each time an activity is presented.
+  open var activityConfigurationClosure: (_ identifer: String, _ controller: UIViewController) -> () = { identifier, controller in }
+  
+  
+  /* Lifecycle */
   
   open override func viewDidLoad() {
     super.viewDidLoad()
@@ -45,23 +41,14 @@ open class ActivityViewController : UIViewController {
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     if let foundIdentifier = initialActivityIdentifier {
-      self.performActivityOperation(ActivityOperation(rule: .new, identifier: foundIdentifier))
+      if case .first(let activity) = activitiesManager.activityForIdentifier(foundIdentifier) {
+        _ = transitionManager.initializeDisplayWithController(activity.controller)
+      }
     }
   }
   
-  open func prepareActivity(_ activity: String, controller: UIViewController) -> Void {
-    activityConfigurationClosure(activity, controller)
-  }
+  /* End Lifecycle */
   
-  open override func prepare(for segue: UIStoryboardSegue, sender: Any?) { }
-  
-  open func configureInitialActivityIdentifier(_ identifier: String) {
-    initialActivityIdentifier = identifier
-  }
-  
-  open func registerStoryboardIdentifier(_ storyboard: String, forActivityIdentifier identifier: String) {
-    activitiesManager.registerStoryboardIdentifier(storyboard, forActivityIdentifier: identifier)
-  }
   
   open func registerGenerator(_ identifier: String, generator: @escaping ActivityGenerator) {
     activitiesManager.registerGenerator(identifier, generator: generator)
@@ -71,7 +58,13 @@ open class ActivityViewController : UIViewController {
     activitiesManager.flushInactiveActivitiesForIdentifier(identifier)
   }
   
+  // TODO: Cannot display a new controller of the same activityIdentifier atm. Refactor previous activity or activity stack to be queriable?
   open func performActivityOperation(_ operation: ActivityOperation) {
+    // ignores calls to perform an activity operation while the controller is still animating.
+    guard !animating else {
+      return
+    }
+    
     let activityResult: ActivityResult
     switch operation.selectRule {
     case .new:
@@ -85,17 +78,47 @@ open class ActivityViewController : UIViewController {
     processActivityResult(activityResult, withOperation: operation)
   }
   
-  func processActivityResult(_ activityResult: ActivityResult, withOperation operation: ActivityOperation) -> Void {
+  fileprivate func processActivityResult(_ activityResult: ActivityResult, withOperation operation: ActivityOperation) -> Void {
     if enableLogging { print("Activity: \(activityResult)") }
     switch activityResult {
-    case .fresh(let activity):
-      self.prepareActivity(activity.identifier, controller: activity.controller)
+    case .first(let activity), .fresh(let activity):
+      activityInitiationClosure(activity.identifier, activity.controller)
+      activityConfigurationClosure(activity.identifier, activity.controller)
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
     case .retrieved(let activity):
+      activityConfigurationClosure(activity.identifier, activity.controller)
       transitionManager.transitionToVC(activity.controller, withOperation: operation)
     case .current(_): break
     case .error: break
     }
   }
   
+}
+
+
+// Helper functions for finding the right ActivityViewController to call operations on.
+extension ActivityViewController {
+  public static var rootController: ActivityViewController? {
+    let delegate =  UIApplication.shared.delegate
+    let rootController = delegate?.window??.rootViewController as? ActivityViewController
+    if let appVC = rootController {
+      return appVC
+    } else {
+      return .none
+    }
+  }
+  
+  // Only works if the controller is a child controller of the activityVC (it must be the active activities controller.)
+  public static func closestParentOfController(_ controller: UIViewController) -> ActivityViewController? {
+    var inspectedController: UIViewController? = controller
+    while inspectedController != .none {
+      let parent = inspectedController?.parent
+      if let parentActivity = parent as? ActivityViewController {
+        return parentActivity
+      }
+      
+      inspectedController = parent
+    }
+    return .none
+  }
 }

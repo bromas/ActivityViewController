@@ -25,27 +25,23 @@ internal class ActivityProvider {
   
   init () { }
   
-  func registerStoryboardIdentifier(_ storyboard: String, forActivityIdentifier identifier: String) {
-    self.activityStoryboardNames[identifier] = storyboard
-  }
-  
   func registerGenerator(_ identifier: String, generator: @escaping ActivityGenerator) {
     self.activityGenerators[identifier] = generator
   }
   
+  // Checks first for a generator and then for a storyboard with the identifiers name - loads the initial view controller.
   func activityFromIdentifier(_ identifier: String) -> Activity {
     var controller: UIViewController
     if let generator = activityGenerators[identifier] {
       controller = generator()
     } else {
-      let storyboardName = self.activityStoryboardNames[storyboardIdentifierFromActivityIdentifier(identifier)] ?? identifier
-      controller = self.loadStoryboard(storyboardName, withActivityName: identifier)
+      controller = self.loadStoryboard(withActivityName: identifier)
     }
     return Activity(identifier: identifier, controller: controller)
   }
   
-  fileprivate func loadStoryboard(_ storyboardName: String, withActivityName activity: String) -> UIViewController {
-    let controller = UIStoryboard(name: storyboardName, bundle: Bundle.main).instantiateInitialViewController()
+  fileprivate func loadStoryboard(withActivityName activity: String) -> UIViewController {
+    let controller = UIStoryboard(name: activity, bundle: Bundle.main).instantiateInitialViewController()
     if let initialized = controller {
       return initialized
     }

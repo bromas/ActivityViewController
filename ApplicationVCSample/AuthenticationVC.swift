@@ -23,13 +23,18 @@ class AuthenticationVC : UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "activities" {
       self.activities = segue.destination as? ActivityViewController
+      
+      self.activities.registerGenerator("Generator") { () -> UIViewController in
+          return NoXibController()
+      }
+      
     }
   }
   
   override func viewDidLoad() {
     self.navigationController?.isNavigationBarHidden = true
     self.actionOnButtonTap = {
-      var operation = ActivityOperation(rule: .new, identifier: "Authentication", animator: ShrinkAnimator())
+      var operation = ActivityOperation(rule: .new, identifier: "Launch", animator: ShrinkAnimator())
       operation.completionBlock = {
         print("ohhhh yea")
       }
@@ -45,15 +50,20 @@ class AuthenticationVC : UIViewController {
   @IBAction func backButtonTapped() {
     switch timesPresented % 5 {
     case 0:
-      ActivityOperation(identifier: "Launch", animator: CircleTransitionAnimator(direction: .outward, duration: 0.5)).execute()
+      let operation = ActivityOperation(identifier: "Launch", animator: CircleTransitionAnimator(direction: .outward, duration: 0.5))
+      ActivityViewController.rootController?.performActivityOperation(operation)
     case 1:
-      ActivityOperation(identifier: "Launch", animator: CinematicWipeTransitionAnimator()).execute()
+      let operation = ActivityOperation(identifier: "Launch", animator: CinematicWipeTransitionAnimator())
+      ActivityViewController.rootController?.performActivityOperation(operation)
     case 2:
-      ActivityOperation(identifier: "Launch", animator: ShrinkAnimator()).execute()
+      let operation = ActivityOperation(identifier: "Launch", animator: ShrinkAnimator())
+      ActivityViewController.rootController?.performActivityOperation(operation)
     case 3:
-      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionCurlUp, duration: 0.5).execute()
+      let operation = ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionCurlUp, duration: 0.5)
+      ActivityViewController.rootController?.performActivityOperation(operation)
     default:
-      ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionFlipFromLeft, duration: 0.5).execute()
+      let operation = ActivityOperation(identifier: "Launch", animationType: UIViewAnimationOptions.transitionFlipFromLeft, duration: 0.5)
+      ActivityViewController.rootController?.performActivityOperation(operation)
     }
   }
   

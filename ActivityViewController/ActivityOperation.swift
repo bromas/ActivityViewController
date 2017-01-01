@@ -55,15 +55,6 @@ public struct ActivityOperation {
     animationDuration = duration
   }
   
-  public func execute () {
-    let delegate =  UIApplication.shared.delegate
-    let rootController = delegate?.window??.rootViewController as? ActivityViewController
-    if let appVC = rootController {
-      appVC.performActivityOperation(self)
-    }
-    else {
-      assert(false, "You are not managing your application with an application view controller. Please refer to the documentation.")
-    }
-  }
 }
+
 
