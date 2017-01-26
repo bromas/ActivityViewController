@@ -9,24 +9,29 @@
 import UIKit
 
 internal struct InteractiveTransitioningManager {
+  
+  fileprivate weak var managedContainer : UIViewController?
+  
+  init (containerController: UIViewController) {
+    managedContainer = containerController
+  }
+  
+  internal func animate(_ animator: UIViewControllerInteractiveTransitioning, fromVC: UIViewController, toVC: UIViewController, completion: @escaping () -> Void = { }) {
     
-    fileprivate let managedContainer : UIViewController
-    
-    init (containerController: UIViewController) {
-        managedContainer = containerController
+    guard let container = managedContainer else {
+      return
     }
     
-    internal func animate(_ animator: UIViewControllerInteractiveTransitioning, fromVC: UIViewController, toVC: UIViewController, completion: @escaping () -> Void = { }) {
-        prepareAutoresizingContainmentFor(toVC, inController: managedContainer)
-        fromVC.willMove(toParentViewController: nil);
-        
-        let transitionContext = NonInteractiveTransitionContext(managedController: managedContainer, fromViewController: fromVC, toViewController: toVC)
-        
-        transitionContext.completionBlock = { completed in
-            fromVC.view.removeFromSuperview()
-            fromVC.removeFromParentViewController()
-            toVC.didMove(toParentViewController: self.managedContainer)
-            completion()
-        }
+    prepareAutoresizingContainmentFor(toVC, inController: managedContainer)
+    fromVC.willMove(toParentViewController: nil);
+    
+    let transitionContext = NonInteractiveTransitionContext(managedController: container, fromViewController: fromVC, toViewController: toVC)
+    
+    transitionContext.completionBlock = { completed in
+      fromVC.view.removeFromSuperview()
+      fromVC.removeFromParentViewController()
+      toVC.didMove(toParentViewController: self.managedContainer)
+      completion()
     }
+  }
 }

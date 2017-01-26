@@ -11,15 +11,15 @@ import UIKit
 
 internal class ActivityTransitionManager {
   
-  fileprivate let managedContainer : ActivityViewController
+  fileprivate weak var managedContainer : ActivityViewController?
   internal var activeVC : UIViewController?
   
   lazy internal var typeAnimator: AnimateByTypeManager = {
     return AnimateByTypeManager(containerController: self.managedContainer)
-    }()
+  }()
   lazy internal var noninteractiveTransitionManager: AnimateNonInteractiveTransitionManager = {
     return AnimateNonInteractiveTransitionManager(containerController: self.managedContainer)
-    }()
+  }()
   
   init (containerController: ActivityViewController) {
     managedContainer = containerController
@@ -27,18 +27,23 @@ internal class ActivityTransitionManager {
   
   var containerView: UIView? = .none
   
-/**
-  An 'active controller's view should be contained in a UIView subview of the container controller to operate correctly with all transition types.
-*/
+  /**
+   An 'active controller's view should be contained in a UIView subview of the container controller to operate correctly with all transition types.
+   */
   
   internal func transitionToVC(_ controller: UIViewController, withOperation operation: ActivityOperation) {
+    
+    guard let managedContainer = managedContainer else {
+      return
+    }
+    
     if let activeVCUnwrapped = activeVC {
       switch operation.type {
       case .animationOption:
-        self.managedContainer.animating = true
+        managedContainer.animating = true
         typeAnimator.animate(operation.animationOption, fromVC: activeVCUnwrapped, toVC: controller, withDuration: operation.animationDuration, completion: completionGen(operation))
       case .nonInteractiveTransition:
-        self.managedContainer.animating = true
+        managedContainer.animating = true
         noninteractiveTransitionManager.animate(operation.nonInteractiveTranstionanimator, fromVC: activeVCUnwrapped, toVC: controller, completion: completionGen(operation))
       case .none:
         _ = swapToControllerUnanimated(controller, fromController: activeVCUnwrapped)
@@ -52,9 +57,9 @@ internal class ActivityTransitionManager {
   }
   
   fileprivate func completionGen(_ operation: ActivityOperation) -> (() -> Void) {
-    return { [unowned self] _ in
+    return { [weak self] _ in
       operation.completionBlock()
-      self.managedContainer.animating = false
+      self?.managedContainer?.animating = false
     }
   }
   
@@ -76,6 +81,11 @@ internal class ActivityTransitionManager {
   }
   
   func initializeDisplayWithController(_ controller: UIViewController) -> Bool {
+    
+    guard let managedContainer = managedContainer else {
+      return false
+    }
+    
     let container = UIView(frame: CGRect.zero)
     container.translatesAutoresizingMaskIntoConstraints = false
     managedContainer.view.addSubview(container)

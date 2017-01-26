@@ -11,13 +11,13 @@ import UIKit
 
 internal struct AnimateByTypeManager {
   
-  fileprivate let managedContainer : UIViewController
+  fileprivate weak var managedContainer : UIViewController?
   
-  init (containerController: UIViewController) {
+  init (containerController: UIViewController?) {
     managedContainer = containerController
   }
   
-  internal func animate(_ animationType:UIViewAnimationOptions, fromVC: UIViewController, toVC: UIViewController, withDuration duration: TimeInterval, completion: @escaping () -> Void = { }) {
+  internal func animate(_ animationType: UIViewAnimationOptions, fromVC: UIViewController, toVC: UIViewController, withDuration duration: TimeInterval, completion: @escaping () -> Void = { }) {
     prepareContainmentFor(toVC, inController: managedContainer)
     fromVC.willMove(toParentViewController: nil);
     
@@ -31,6 +31,6 @@ internal struct AnimateByTypeManager {
       completion()
     }
     
-    managedContainer.transition(from: fromVC, to: toVC, duration: duration, options: animationType, animations: animations, completion: completion)
+    managedContainer?.transition(from: fromVC, to: toVC, duration: duration, options: animationType, animations: animations, completion: completion)
   }
 }

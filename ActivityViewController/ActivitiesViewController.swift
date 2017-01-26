@@ -46,7 +46,6 @@ open class ActivityViewController : UIViewController {
       }
     }
   }
-  
   /* End Lifecycle */
   
   
