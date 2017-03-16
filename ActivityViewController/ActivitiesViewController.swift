@@ -12,12 +12,13 @@ import UIKit
 public typealias ActivityGenerator = () -> UIViewController
 
 open class ActivityViewController : UIViewController {
-
+  
   open var enableLogging: Bool = false
   open var animating: Bool = false
   
   internal var transitionManager: ActivityTransitionManager!
   internal let activitiesManager: ActivityManager = ActivityManager()
+  private var hasInitialized: Bool = false
   
   open var initialActivityIdentifier: String?
   
@@ -40,11 +41,12 @@ open class ActivityViewController : UIViewController {
   
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    if let foundIdentifier = initialActivityIdentifier {
+    if let foundIdentifier = initialActivityIdentifier, !hasInitialized {
       if case .first(let activity) = activitiesManager.activityForIdentifier(foundIdentifier) {
         _ = transitionManager.initializeDisplayWithController(activity.controller)
       }
     }
+    hasInitialized = true
   }
   /* End Lifecycle */
   
@@ -121,3 +123,4 @@ extension ActivityViewController {
     return .none
   }
 }
+
